@@ -28,3 +28,9 @@ Demostración instalada con datos ficticios: una sugerencia aprobada para una fi
 ## Pendiente
 
 Plugin Obsidian y API local, MCP de lectura, IA/semántica opcional, relaciones/grafos, distribución Windows y licencia. Las diez preguntas reales siguen pendientes para evaluar utilidad cotidiana. La búsqueda de mensajes corresponde a las fuentes; las anotaciones de transcripciones no se indexan, pero el contenido de fichas sí.
+
+## Vista previa de escritorio — desarrollo
+
+Ante la petición de probar algo visible, rama `feat/desktop-preview` basada en `feat/tag-catalog` (PR #3 aún sin fusionar). Paquete 0.3.1: ventana Tk local con demo sintética independiente, selección de biblioteca, importación JSON/ZIP, búsqueda de fuentes/fichas por etiquetas, fichas manuales/con citas de versiones exactas, apertura de notas y backup. Un único trabajador serializa operaciones sin bloquear Tk; cerrar espera el trabajo actual. No hay servidor ni llamadas externas. Plugin Obsidian y API siguen pendientes: esta vista previa no completa la entrega 4.
+
+Verificación local: suite completa Windows de 72 pruebas, 71 correctas y una omitida por permisos de symlinks. Incluye cuatro pruebas de demo/recuperación, sesión/errores, serialización y versiones seleccionadas. Smoke real de Tk en Windows: demo, búsqueda, selección de fuente, guardado y búsqueda de ficha con una cita, cierre correcto. CI por comprobar. Demo y acceso directo Windows creados fuera de Git; proceso de ventana lanzado y comprobado con título y respuesta de Windows. La biblioteca se puede reutilizar al reabrir. Guía compartida: `docs/DESKTOP_PREVIEW.md`.

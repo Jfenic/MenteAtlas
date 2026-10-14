@@ -4,13 +4,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "matlasagent"
-version = "0.3.0"
+version = "0.3.1"
 description = "A local personal knowledge atlas with independent libraries"
 requires-python = ">=3.12"
 dependencies = ["PyYAML==6.0.3"]
 
 [project.scripts]
 matlas = "matlasagent.cli:main"
+matlas-desktop = "matlasagent.desktop:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+matlasagent = ["synthetic-export.json"]

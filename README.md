@@ -6,9 +6,10 @@ Nombre de producto: **MAtlasAgent**. Repositorio: **Jfenic/MenteAtlas**.
 
 Application code is shared; every person keeps their own library and settings outside Git. Personal conversation exports never belong in this repository. The application does not connect to your ChatGPT account or send data to AI providers.
 
-**Status: CLI prototype, deliveries 1–3, not the complete product.** Import ChatGPT JSON/ZIP exports, preserve source versions, render Obsidian transcripts, create editable knowledge cards, search messages/cards with citations, resolve preserved proposals, and back up/restore independent libraries. Central tags support hierarchies, synonyms, proposals, merges and human-protected assignments. Deterministic rules suggest existing approved tags for review. Obsidian plugin, MCP, AI and graphs remain planned.
+**Status: CLI prototype plus desktop preview, not the complete product.** Import ChatGPT JSON/ZIP exports, preserve source versions, render Obsidian transcripts, create editable knowledge cards, search messages/cards with citations, resolve preserved proposals, and back up/restore independent libraries. Central tags support hierarchies, synonyms, proposals, merges and human-protected assignments. Deterministic rules suggest existing approved tags for review. The desktop preview supports import, search, card creation and backups without a terminal after launch. Obsidian plugin, MCP, AI and graphs remain planned.
 
 - [Inicio en Windows / Windows quick start](docs/WINDOWS.md)
+- [Prueba visual / Desktop preview](docs/DESKTOP_PREVIEW.md)
 - [Architecture, data model and limitations](docs/ARCHITECTURE.md)
 - [Fichas, conflictos y recuperación / Cards and recovery](docs/CARDS_AND_RECOVERY.md)
 - [Centro de etiquetas / Tag center](docs/TAGS.md)
