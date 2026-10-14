@@ -1,5 +1,7 @@
 # Registro
 
+- 2026-10-14: CI de vista previa satisfactorio en Windows/Ubuntu para `4146764`: https://github.com/Jfenic/MenteAtlas/actions/runs/38595678936. PR #4 sigue en borrador, sin fusionar. Commits posteriores registran resultados y no cambian la implementación probada.
+
 - 2026-10-14: PR #4 creado en borrador sobre PR #3: https://github.com/Jfenic/MenteAtlas/pull/4. Wheel 0.3.1 comprobado con recurso de demo y entrada de escritorio. Sin merge automático; CI pendiente.
 
 - 2026-10-14: vista previa verificada con suite completa de 72 pruebas en Windows (71 correctas, una omisión por permisos de symlinks). Ventana de la demo lanzada desde el mismo comando del acceso directo y comprobada como proceso con ventana y respuesta. CI por comprobar.
