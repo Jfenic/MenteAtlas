@@ -162,10 +162,6 @@ class Handler(BaseHTTPRequestHandler):
                     if set(data) != {"path"} or not isinstance(data["path"], str):
                         raise LibraryError("Choose a new backup path.")
                     result = lib.backup(Path(data["path"]))
-                elif endpoint == "/shutdown":
-                    self.reply(200, {"stopping": True})
-                    threading.Thread(target=self.server.shutdown, daemon=True).start()
-                    return
                 else:
                     self.reply(404, {"error": "Unknown endpoint."})
                     return
