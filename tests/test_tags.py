@@ -378,6 +378,20 @@ class TagTests(unittest.TestCase):
             self.assertEqual(main(args + ["tags", "accept", proposal["id"]]), 0)
             self.assertEqual(main(args + ["search", "python", "--tag", "py"]), 0)
 
+    def test_windows_encoded_cli_preserves_multilingual_json(self):
+        buffer = io.BytesIO()
+        stream = io.TextIOWrapper(buffer, encoding="cp1252")
+        try:
+            with redirect_stdout(stream), redirect_stderr(io.StringIO()):
+                code = main(["--instance", str(self.library.root), "tags", "add", "日本語", "--label", "日本語の資料"])
+                stream.flush()
+            self.assertEqual(code, 0)
+            output = json.loads(buffer.getvalue().decode("utf-8"))
+            self.assertEqual(output["slug"], "日本語")
+            self.assertEqual(output["label"], "日本語の資料")
+        finally:
+            stream.detach()
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -12,3 +12,4 @@
 - 2026-10-14: instalación editable 0.3.0 y suite completa comprobadas en Windows: 67 pruebas (66 correctas, una omisión por permisos de symlinks). CI remoto de entrega 3 pendiente.
 - 2026-10-14: demostración local de catálogo: aprobar una sugerencia, asignar una etiqueta a un mensaje, backup/restauración y búsqueda por alias/padre comprobados con fixtures ficticios. No se guardan rutas personales de esa demo en el repo.
 - 2026-10-14: PR #3 abierto en borrador hacia main. CI Windows/Ubuntu correcto para `6df659a`: https://github.com/Jfenic/MenteAtlas/actions/runs/38577388647. No fusionado automáticamente. Próximo bloque: interfaz Obsidian y API local protegida.
+- 2026-10-14: observado stdout cp1252 en Windows; ajustada la CLI a UTF-8 para preservar JSON multilingüe, con regresión de una etiqueta japonesa. CI del ajuste por comprobar.

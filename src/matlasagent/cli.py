@@ -28,6 +28,10 @@ def body_file(path):
 
 
 def main(argv=None):
+    # Windows pipes otherwise inherit cp1252 and corrupt multilingual JSON output.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(prog="matlas", description="MAtlasAgent — your local knowledge atlas")
     parser.add_argument("--version", action="version", version=__version__)
     parser.add_argument("--instance", type=Path, default=default_instance(), help="Instance directory outside Git")
