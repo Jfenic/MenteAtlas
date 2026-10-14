@@ -1,10 +1,10 @@
-# Architecture — deliveries 1–3
+# Architecture — local library and Obsidian preview
 
 ## Application and independent instances
 
-Shared Python package `matlasagent`, CLI `matlas`. An instance directory contains `instance.json` (UUID, absolute vault path, schema version), preserved `originals/`, atomic per-conversation `sources/`, import journals in `imports/`, generated transcript versions, conflict proposals, and `index.sqlite3`. A separate vault contains user-visible Markdown transcripts. Both directories must be outside every Git checkout and must not overlap. Initialization requires empty directories.
+Shared Python package `matlasagent`, CLI `matlas`. An instance directory contains `instance.json` (UUID, absolute vault path, schema version), preserved `originals/`, atomic per-conversation `sources/`, import journals in `imports/`, generated transcript versions, conflict proposals, and `index.sqlite3`. A separate vault contains user-visible Markdown transcripts. Both directories must be outside every Git checkout and must not overlap. Initialization requires empty directories; the plugin's explicit new-library action also permits a vault containing only `.obsidian` configuration.
 
-No network, telemetry or AI runtime calls. Installation may access the package index for build dependencies. Source identifiers never form path components: filenames use SHA-256, avoiding Windows reserved names, title collisions and path traversal. Linked/junction directories inside managed trees are rejected. Private files are not encrypted by this application.
+No external network, telemetry or AI runtime calls. The Obsidian plugin explicitly starts an authenticated loopback-only Python transport; the CLI/desktop preview does not start a server. See [Obsidian transport and lifecycle](OBSIDIAN.md). Installation may access package indices for dependencies. Source identifiers never form path components: filenames use SHA-256, avoiding Windows reserved names, title collisions and path traversal. Linked/junction directories inside managed trees are rejected. Private files are not encrypted by this application.
 
 ## Canonical and derived data
 

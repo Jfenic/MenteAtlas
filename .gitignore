@@ -14,3 +14,4 @@ instances/
 vault/
 exports/
 conversations.json
+node_modules/
