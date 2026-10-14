@@ -24,12 +24,13 @@ def anchor(message_id):
 
 def note_header(path):
     try:
-        lines = path.read_text(encoding="utf-8").splitlines()
-        if len(lines) >= 3 and lines[0] == "---" and lines[2] == "---":
-            data = json.loads(lines[1])
-            if isinstance(data, dict):
-                return data
-    except (UnicodeError, json.JSONDecodeError):
+        from .cards import MAX_HEADER, parse_header
+        with path.open("rb") as stream:
+            text = stream.read(MAX_HEADER + 1).decode("utf-8-sig", errors="replace")
+        data, _ = parse_header(text)
+        if isinstance(data, dict):
+            return data
+    except (UnicodeError, json.JSONDecodeError, LibraryError):
         pass
     return {}
 
@@ -89,7 +90,7 @@ class Library:
         connection.row_factory = sqlite3.Row
         connection.execute("PRAGMA foreign_keys=ON")
         version = connection.execute("PRAGMA user_version").fetchone()[0]
-        if version > 1:
+        if version > 2:
             connection.close()
             raise LibraryError("Index schema is newer than this application.")
         if version == 0:
@@ -110,6 +111,19 @@ class Library:
                 PRAGMA user_version=1;
                 COMMIT;
             """)
+            version = 1
+        if version == 1:
+            connection.executescript("""
+                BEGIN;
+                CREATE TABLE cards(id TEXT PRIMARY KEY, title TEXT, type TEXT, status TEXT,
+                    created_at REAL, updated_at REAL, note_path TEXT UNIQUE, content_hash TEXT,
+                    metadata TEXT, body TEXT);
+                CREATE VIRTUAL TABLE card_fts USING fts5(card_id UNINDEXED,title,body,
+                    tokenize='unicode61 remove_diacritics 2');
+                CREATE INDEX card_filters ON cards(type,status,created_at);
+                PRAGMA user_version=2;
+                COMMIT;
+            """)
         return connection
 
     def source_files(self):
@@ -124,7 +138,7 @@ class Library:
             for name in dirs:
                 confined(self.vault, str((Path(directory) / name).relative_to(self.vault)))
             for name in files:
-                if not name.endswith(".md"):
+                if Path(name).suffix.lower() != ".md":
                     continue
                 path = confined(self.vault, str((Path(directory) / name).relative_to(self.vault)))
                 header = note_header(path)
@@ -239,7 +253,7 @@ class Library:
         connection = self.connect()
         try:
             with connection:
-                for table in ("message_fts", "message_versions", "messages", "conversations", "import_batches"):
+                for table in ("card_fts", "cards", "message_fts", "message_versions", "messages", "conversations", "import_batches"):
                     connection.execute("DELETE FROM " + table)
                 for source in self.source_files():
                     record = json.loads(source.read_text(encoding="utf-8"))
@@ -263,6 +277,8 @@ class Library:
                     batch = json.loads(p.read_text(encoding="utf-8"))
                     connection.execute("INSERT INTO import_batches VALUES(?,?,?,?,?)", (
                         batch["id"], batch["file_hash"], batch["imported_at"], batch["status"], json.dumps(batch["counts"])))
+                from .cards import index_cards
+                index_cards(self, connection)
         finally:
             connection.close()
         return self.stats()
@@ -271,9 +287,89 @@ class Library:
         connection = self.connect()
         try:
             return {table: connection.execute("SELECT count(*) FROM " + table).fetchone()[0]
-                    for table in ("conversations", "messages", "message_versions", "import_batches")}
+                    for table in ("conversations", "messages", "message_versions", "import_batches", "cards")}
         finally:
             connection.close()
+
+    @exclusive
+    def create_card(self, title, **kwargs):
+        from .cards import create
+        return create(self, title, **kwargs)
+
+    @exclusive
+    def update_card(self, card_id, **kwargs):
+        from .cards import update
+        return update(self, card_id, **kwargs)
+
+    @exclusive
+    def get_card(self, card_id):
+        from .cards import find, reference_details, summary
+        self.rebuild()
+        card = find(self, card_id)
+        return {**summary(card), "metadata": card["metadata"], "body": card["body"],
+                "citations": [reference_details(self, r, include_text=True) for r in card["metadata"].get("sources", [])]}
+
+    @exclusive
+    def search_cards(self, query=None, *, kind=None, status=None, tag=None,
+                     since=None, until=None, limit=20, offset=0):
+        from .cards import TYPES, STATUSES, reference_details
+        if not 1 <= limit <= 100 or offset < 0 or (query is not None and (not query.strip() or len(query) > 1000)):
+            raise LibraryError("Invalid card search or pagination bounds.")
+        if (kind is not None and kind not in TYPES) or (status is not None and status not in STATUSES):
+            raise LibraryError("Invalid card search filter.")
+        self.rebuild()  # Discover external edits, moves and deletions before returning results.
+        clauses, parameters = [], []
+        base = "FROM cards c"
+        snippet = "''"
+        if query is not None:
+            base += " JOIN card_fts ON card_fts.card_id=c.id"
+            clauses.append("card_fts MATCH ?")
+            parameters.append(query)
+            snippet = "snippet(card_fts,2,'[',']','…',24)"
+        for expression, value in (("c.type=?", kind), ("c.status=?", status),
+                                  ("c.created_at>=?", since), ("c.created_at<?", until)):
+            if value is not None:
+                clauses.append(expression)
+                parameters.append(value)
+        if tag is not None:
+            clauses.append("EXISTS(SELECT 1 FROM json_each(c.metadata,'$.tags') WHERE value=?)")
+            parameters.append(tag)
+        sql = "SELECT c.id,c.title,c.type,c.status,c.note_path,c.content_hash,c.metadata," + snippet + " AS snippet " + base
+        if clauses:
+            sql += " WHERE " + " AND ".join(clauses)
+        sql += " ORDER BY c.created_at DESC,c.id LIMIT ? OFFSET ?"
+        connection = self.connect()
+        try:
+            rows = [dict(row) for row in connection.execute(sql, (*parameters, limit, offset))]
+            for row in rows:
+                row["metadata"] = json.loads(row["metadata"])
+                row["citations"] = [reference_details(self, r) for r in row["metadata"].get("sources", [])]
+                row["note_uri"] = Path(row["note_path"]).as_uri()
+            return rows
+        except sqlite3.OperationalError:
+            raise LibraryError("Invalid card search expression or unavailable index.") from None
+        finally:
+            connection.close()
+
+    @exclusive
+    def backup(self, path):
+        from .recovery import backup
+        return backup(self, Path(path))
+
+    @classmethod
+    def restore(cls, archive, instance, vault):
+        from .recovery import restore
+        return restore(Path(archive), Path(instance), Path(vault))
+
+    @exclusive
+    def list_conflicts(self):
+        from .conflicts import list_conflicts
+        return list_conflicts(self)
+
+    @exclusive
+    def resolve_conflict(self, name, *, action, expected_hash=None):
+        from .conflicts import resolve
+        return resolve(self, name, action=action, expected_hash=expected_hash)
 
     def search(self, query, *, role=None, since=None, until=None, limit=20, offset=0):
         if not query.strip() or len(query) > 1000 or not 1 <= limit <= 100 or offset < 0:

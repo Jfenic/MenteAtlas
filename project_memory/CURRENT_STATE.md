@@ -8,4 +8,14 @@ PR en borrador sin fusionar: https://github.com/Jfenic/MenteAtlas/pull/1. Commit
 
 Demostración instalada localmente con el ejemplo sintético: una conversación, dos mensajes, segunda importación sin duplicados, búsqueda con fuente y reconstrucción verificadas. Las ubicaciones personales de esa demo no se registran en Git.
 
-Pendiente: fichas de conocimiento, backup/restauración completa, etiquetas, plugin Obsidian, MCP, IA, grafos y distribución/licencia. La búsqueda actual corresponde a mensajes fuente, no a anotaciones humanas de las transcripciones. Datos utilizados: exclusivamente sintéticos.
+## Entrega 2 — en rama propia
+
+Implementada en `feat/cards-and-recovery`, apoyada en entrega 1 sin fusionarla. Fichas Markdown/YAML editables con UUID, tipos/estados, fuentes múltiples y versiones exactas; búsquedas con filtros y detección de cambios/movimientos/borrados. Actualizaciones con hash esperado y propuestas preservadas; revisión humana explícita y sucesión de decisiones sin ciclos. Resolución de conflictos, historial y auditoría. Backup completo con manifest/checksums y restauración verificada en otra ubicación, sin sobrescribir destinos y reconstruyendo rutas/índice. PyYAML 6.0.3 fijado para propiedades Obsidian; migración SQLite 1→2.
+
+Suite local Windows: 44 pruebas, 43 correctas y una omitida por permisos de symlinks. Demostración instalada: ficha con dos fuentes, copia completa y restauración en otra ubicación verificadas, preservando UUID y referencias y usando rutas nuevas.
+
+PR #2 en borrador, sin merge: https://github.com/Jfenic/MenteAtlas/pull/2. Base: `feat/local-library-core` (depende de PR #1); rama `feat/cards-and-recovery`. Commit de implementación `57b435f3ae59d94dd5e942cf3f699ff9837f8d1d` verificado en Windows/Ubuntu: https://github.com/Jfenic/MenteAtlas/actions/runs/38567434636. Ajuste posterior: seguimiento de transcripciones renombradas con extensión `.MD`, con regresión local correcta; comprobar GitHub para el CI del head actual.
+
+No equivale a publicación ni a aprobación humana. Ver `docs/CARDS_AND_RECOVERY.md` para uso y limitaciones de reemplazo concurrente, backup sin cifrado y publicación de restauración en dos carpetas.
+
+Pendiente: catálogo central de etiquetas, plugin Obsidian, MCP, IA, grafos y distribución/licencia. La búsqueda de mensajes corresponde a fuentes; las anotaciones de transcripciones no se indexan, pero el contenido de fichas sí. Datos utilizados: exclusivamente sintéticos. Las diez preguntas reales siguen pendientes para validar utilidad cotidiana.

@@ -1,6 +1,6 @@
 # MAtlasAgent — inicio en Windows
 
-Esta es la primera entrega de consola. Python 3.12 y Git deben estar instalados; Obsidian sirve para abrir la carpeta de notas. No requiere WSL. Los datos reales se probarán después de implementar backup/restauración.
+Este es el prototipo de consola de las entregas 1–2. Python 3.12 y Git deben estar instalados; Obsidian sirve para abrir la carpeta de notas. No requiere WSL. Empieza con la demostración sintética y comprueba backup/restauración en otra carpeta antes de importar tus exportaciones reales.
 
 ## Instalar el programa
 
@@ -8,7 +8,7 @@ Esta es la primera entrega de consola. Python 3.12 y Git deben estar instalados;
 git clone https://github.com/Jfenic/MenteAtlas.git
 cd MenteAtlas
 # Mientras la primera entrega esté en revisión:
-git switch feat/local-library-core
+git switch feat/cards-and-recovery
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e .
 .\.venv\Scripts\python.exe -m matlasagent --help
@@ -42,9 +42,9 @@ Abre `$atlasVault` como bóveda en Obsidian. Verás una conversación ficticia y
 - Fechas en UTC; `--to` es exclusivo. El fragmento y la versión representan el mensaje fuente archivado, no tus anotaciones posteriores sobre la transcripción.
 - Importación parcial devuelve código 2 y contadores de errores; importa los chats válidos y permite reintentar. No imprime conversaciones ni rutas personales en los errores.
 - Mensajes no textuales se conservan en el export original y se cuentan como advertencias; los adjuntos aún no se renderizan.
-- Si editas una transcripción y cambia su fuente, la propuesta se guarda en `conflicts` de la instancia; tu nota permanece intacta. Resolución manual guiada pendiente.
+- Si editas una transcripción y cambia su fuente, la propuesta se guarda en `conflicts` de la instancia; tu nota permanece intacta. Usa `conflicts list/show/resolve` para revisarla explícitamente.
 - Una transcripción renombrada conserva su ID; una borrada no se regenera automáticamente. El contenido fuente sigue siendo buscable sin enlace a nota.
 
 ## English quick start
 
-Install with the first command block, initialize two empty directories outside Git, and import `examples/synthetic-export.json`. `--instance` selects your private archive and configuration; `--vault` selects the separate Markdown folder. Open the vault in Obsidian. Search citations identify the archived source message. Do not use this prototype as your only copy of real data: verified backup and restore will arrive in delivery 2.
+Install with the first command block, initialize two empty directories outside Git, and import `examples/synthetic-export.json`. `--instance` selects your private archive and configuration; `--vault` selects the separate Markdown folder. Open the vault in Obsidian. Search citations identify the archived source message. Delivery 2 adds editable knowledge cards, explicit conflict resolution and checksum-verified complete backup/restore. See [cards and recovery](CARDS_AND_RECOVERY.md) and try restoring the demonstration into another location before using real exports.
