@@ -1,5 +1,7 @@
 # Registro
 
+- 2026-10-14: comprobación local específica con `C:\PROGRA~1` confirmó que la variante JS de `realpathSync` conserva el alias; cambiada a `realpathSync.native`, que devuelve `C:\Program Files`. La prueba cliente completa de CI usa precisamente rutas temporales con alias en Windows.
+
 - 2026-10-14: CI Ubuntu correcto; Windows detectó comparación textual de ruta temporal con alias 8.3 `RUNNER~1`. Ajustado el assert Python a ruta resuelta y la comprobación del vault en el cliente a `realpathSync`, manteniendo rechazo de otra biblioteca. Revalidación pendiente.
 
 - 2026-10-14: PR #5 creado en borrador sobre PR #4: https://github.com/Jfenic/MenteAtlas/pull/5. Paquete Python 0.4.0 instalado; plugin compilado copiado a la demo y bundle ZIP preparado localmente, sin configuración privada. CI pendiente. Sin merge.

@@ -70,7 +70,7 @@ export class Engine {
         try {
           const info = JSON.parse(pending.split('\n')[0]);
           // Windows temp/user paths may use 8.3 aliases; compare filesystem identities.
-          const actual = realpathSync(info.vault), expected = realpathSync(vault);
+          const actual = realpathSync.native(info.vault), expected = realpathSync.native(vault);
           const sameVault = process.platform === 'win32' ? actual.toLowerCase() === expected.toLowerCase() : actual === expected;
           if (info.protocol !== 1 || !Number.isInteger(info.port) || info.port < 1 || info.port > 65535 || !sameVault) throw new Error();
           this.port = info.port;
