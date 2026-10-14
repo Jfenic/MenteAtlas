@@ -138,7 +138,7 @@ class Library:
             for name in dirs:
                 confined(self.vault, str((Path(directory) / name).relative_to(self.vault)))
             for name in files:
-                if not name.endswith(".md"):
+                if Path(name).suffix.lower() != ".md":
                     continue
                 path = confined(self.vault, str((Path(directory) / name).relative_to(self.vault)))
                 header = note_header(path)

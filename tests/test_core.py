@@ -93,7 +93,7 @@ class CoreTests(unittest.TestCase):
         path = self.export([conversation()])
         self.library.import_export(path)
         note = next(self.library.vault.rglob("*.md"))
-        moved = self.library.vault / "renamed.md"
+        moved = self.library.vault / "renamed.MD"
         note.rename(moved)
         self.library.import_export(path)
         self.assertEqual(Path(self.library.search("atlas")[0]["note_path"]), moved)
