@@ -1,5 +1,7 @@
 # Registro
 
+- 2026-10-14: PR #4 creado en borrador sobre PR #3: https://github.com/Jfenic/MenteAtlas/pull/4. Wheel 0.3.1 comprobado con recurso de demo y entrada de escritorio. Sin merge automático; CI pendiente.
+
 - 2026-10-14: vista previa verificada con suite completa de 72 pruebas en Windows (71 correctas, una omisión por permisos de symlinks). Ventana de la demo lanzada desde el mismo comando del acceso directo y comprobada como proceso con ventana y respuesta. CI por comprobar.
 
 - 2026-10-14: el usuario pidió continuar y poder ver/probar el progreso. Añadida vista previa Tk en `feat/desktop-preview` (0.3.1), con demo sintética fuera de Git y acceso directo Windows reutilizable. Comprobadas cuatro pruebas de orquestación y smoke gráfico real de búsqueda, fuente seleccionada, creación/búsqueda de ficha y cierre. Suite completa/CI pendientes; plugin/API siguen como siguiente trabajo.
