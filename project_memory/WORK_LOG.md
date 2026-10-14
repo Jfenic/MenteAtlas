@@ -1,5 +1,13 @@
 # Registro
 
+- 2026-10-14: CI de vista previa satisfactorio en Windows/Ubuntu para `4146764`: https://github.com/Jfenic/MenteAtlas/actions/runs/38595678936. PR #4 sigue en borrador, sin fusionar. Commits posteriores registran resultados y no cambian la implementación probada.
+
+- 2026-10-14: PR #4 creado en borrador sobre PR #3: https://github.com/Jfenic/MenteAtlas/pull/4. Wheel 0.3.1 comprobado con recurso de demo y entrada de escritorio. Sin merge automático; CI pendiente.
+
+- 2026-10-14: vista previa verificada con suite completa de 72 pruebas en Windows (71 correctas, una omisión por permisos de symlinks). Ventana de la demo lanzada desde el mismo comando del acceso directo y comprobada como proceso con ventana y respuesta. CI por comprobar.
+
+- 2026-10-14: el usuario pidió continuar y poder ver/probar el progreso. Añadida vista previa Tk en `feat/desktop-preview` (0.3.1), con demo sintética fuera de Git y acceso directo Windows reutilizable. Comprobadas cuatro pruebas de orquestación y smoke gráfico real de búsqueda, fuente seleccionada, creación/búsqueda de ficha y cierre. Suite completa/CI pendientes; plugin/API siguen como siguiente trabajo.
+
 - 2026-10-14: nuevo repositorio y nombre MAtlasAgent confirmados; documentada separación entre programa e instancias.
 - 2026-10-14: entrega 1 en rama propia; instalación Python editable y 17 pruebas ejecutadas en Windows (16 correctas, una omisión por permiso de symlinks). Idempotencia de 100 conversaciones, conflictos, cambios, reconstrucción y recuperación de interrupción comprobados con datos ficticios.
 - 2026-10-14: PR #1 en borrador, sin merge. CI Windows/Ubuntu satisfactorio para `7c492c3`: https://github.com/Jfenic/MenteAtlas/actions/runs/38562604161. Demostración CLI local instalada con originales sintéticos y búsqueda verificable. Biblioteca editable y backup/restauración son la siguiente entrega.

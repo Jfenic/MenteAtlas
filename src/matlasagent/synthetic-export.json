@@ -1,0 +1,25 @@
+[
+  {
+    "id": "demo-atlas-001",
+    "title": "Demostración ficticia de MAtlasAgent",
+    "create_time": 1700000000,
+    "update_time": 1700000001,
+    "mapping": {
+      "root": {"parent": null, "children": ["node-user"], "message": null},
+      "node-user": {
+        "parent": "root", "children": ["node-assistant"],
+        "message": {
+          "id": "demo-message-user", "author": {"role": "user"}, "create_time": 1700000000,
+          "content": {"content_type": "text", "parts": ["Idea ficticia: construir un atlas local con referencias a las fuentes."]}
+        }
+      },
+      "node-assistant": {
+        "parent": "node-user", "children": [],
+        "message": {
+          "id": "demo-message-assistant", "author": {"role": "assistant"}, "create_time": 1700000001,
+          "content": {"content_type": "text", "parts": ["Propuesta ficticia: conservar las conversaciones en Markdown y buscarlas con SQLite."]}
+        }
+      }
+    }
+  }
+]
