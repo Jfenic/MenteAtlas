@@ -21,7 +21,7 @@ Instalación editable 0.3.0 comprobada. Suite completa local Windows: 67 pruebas
 
 PR #3 en borrador hacia main, sin fusionar: https://github.com/Jfenic/MenteAtlas/pull/3. Commit de implementación `6df659a2597b1b8931d30c98c98535b1d848f43a` verificado con CI Windows/Ubuntu satisfactorio: https://github.com/Jfenic/MenteAtlas/actions/runs/38577388647. Consultar GitHub para cambios posteriores. La autorización de merge de PRs #1/#2 no se interpreta como aprobación automática de nuevas entregas.
 
-Ajuste posterior: salida JSON de la CLI forzada a UTF-8 en Windows; se observó cp1252 en el entorno y se añadió prueba de ida/vuelta con etiqueta japonesa en un stream cp1252. El resultado de CI citado arriba corresponde al código anterior a ese ajuste.
+Ajuste posterior: salida JSON de la CLI forzada a UTF-8 en Windows; se observó cp1252 en el entorno y se añadió prueba de ida/vuelta con etiqueta japonesa en un stream cp1252. Regresión local correcta y suite de 68 pruebas en CI Windows/Ubuntu satisfactoria para `1493b577ab4f6cc2559f68c56ac0632dc8f4f250`: https://github.com/Jfenic/MenteAtlas/actions/runs/38578976208. Los commits posteriores de documentación no cambian el código comprobado.
 
 Demostración instalada con datos ficticios: una sugerencia aprobada para una ficha y una asignación manual de mensaje; backup/restauración conservaron dos etiquetas y dos asignaciones, búsqueda por alias y por categoría padre, sin propuestas pendientes. Sus datos/rutas locales están fuera de Git.
 
