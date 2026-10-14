@@ -113,7 +113,7 @@ class ApiTests(unittest.TestCase):
         config = vault / ".obsidian" / "app.json"
         config.write_text("{}")
         library = open_library(self.base / "new-instance", vault, initialize=True)
-        self.assertEqual(library.vault, vault)
+        self.assertEqual(library.vault, vault.resolve())
         self.assertEqual(config.read_text(), "{}")
         occupied = self.base / "occupied-vault"
         occupied.mkdir()

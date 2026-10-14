@@ -1,5 +1,7 @@
 # Registro
 
+- 2026-10-14: CI Ubuntu correcto; Windows detectó comparación textual de ruta temporal con alias 8.3 `RUNNER~1`. Ajustado el assert Python a ruta resuelta y la comprobación del vault en el cliente a `realpathSync`, manteniendo rechazo de otra biblioteca. Revalidación pendiente.
+
 - 2026-10-14: PR #5 creado en borrador sobre PR #4: https://github.com/Jfenic/MenteAtlas/pull/5. Paquete Python 0.4.0 instalado; plugin compilado copiado a la demo y bundle ZIP preparado localmente, sin configuración privada. CI pendiente. Sin merge.
 
 - 2026-10-14: tras aclaración de que el usuario quiere trabajar dentro de Obsidian, implementado plugin TypeScript + API local autenticada en `feat/obsidian-plugin` (0.4.0), sobre PR #4. Suite Python de 78 pruebas correcta (una omisión por symlinks), seis pruebas API y tres pruebas Node del cliente real correctas; compilación TypeScript correcta. Demo nueva con plugin preparada fuera de Git. Obsidian instalado, CLI desactivada; la carga visual queda pendiente y no se declara verificada. CI/PR pendientes.

@@ -2,6 +2,7 @@ import { spawn, ChildProcessWithoutNullStreams } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
 import { request } from 'node:http';
 import { resolve, relative, isAbsolute } from 'node:path';
+import { realpathSync } from 'node:fs';
 
 export interface Config { python: string; instance: string; openOnStart?: boolean; autoStart?: boolean; }
 export interface Reference { source: string; conversation_id: string; message_id: string; version: number; }
@@ -68,7 +69,8 @@ export class Engine {
         if (!pending.includes('\n')) return;
         try {
           const info = JSON.parse(pending.split('\n')[0]);
-          const actual = resolve(info.vault), expected = resolve(vault);
+          // Windows temp/user paths may use 8.3 aliases; compare filesystem identities.
+          const actual = realpathSync(info.vault), expected = realpathSync(vault);
           const sameVault = process.platform === 'win32' ? actual.toLowerCase() === expected.toLowerCase() : actual === expected;
           if (info.protocol !== 1 || !Number.isInteger(info.port) || info.port < 1 || info.port > 65535 || !sameVault) throw new Error();
           this.port = info.port;
