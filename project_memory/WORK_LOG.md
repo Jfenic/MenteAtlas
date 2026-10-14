@@ -1,5 +1,7 @@
 # Registro
 
+- 2026-10-14: CI final del código Obsidian correcto en Windows y Ubuntu, incluyendo Python, compilación y cliente real: `a674cd7`, https://github.com/Jfenic/MenteAtlas/actions/runs/38646827262. Corregidos aliases 8.3 con resolución nativa. PR #5 sigue en borrador, sin merge. La verificación visual en la aplicación sigue pendiente.
+
 - 2026-10-14: comprobación local específica con `C:\PROGRA~1` confirmó que la variante JS de `realpathSync` conserva el alias; cambiada a `realpathSync.native`, que devuelve `C:\Program Files`. La prueba cliente completa de CI usa precisamente rutas temporales con alias en Windows.
 
 - 2026-10-14: CI Ubuntu correcto; Windows detectó comparación textual de ruta temporal con alias 8.3 `RUNNER~1`. Ajustado el assert Python a ruta resuelta y la comprobación del vault en el cliente a `realpathSync`, manteniendo rechazo de otra biblioteca. Revalidación pendiente.
