@@ -90,7 +90,7 @@ class Library:
         connection.row_factory = sqlite3.Row
         connection.execute("PRAGMA foreign_keys=ON")
         version = connection.execute("PRAGMA user_version").fetchone()[0]
-        if version > 2:
+        if version > 3:
             connection.close()
             raise LibraryError("Index schema is newer than this application.")
         if version == 0:
@@ -124,6 +124,27 @@ class Library:
                 PRAGMA user_version=2;
                 COMMIT;
             """)
+            version = 2
+        if version == 2:
+            connection.executescript("""
+                BEGIN;
+                CREATE TABLE tags(id TEXT PRIMARY KEY, slug TEXT UNIQUE, label TEXT,
+                    parent_id TEXT REFERENCES tags(id) DEFERRABLE INITIALLY DEFERRED,
+                    status TEXT, sensitive INTEGER);
+                CREATE TABLE tag_assignments(target_kind TEXT, target_key TEXT,
+                    tag_id TEXT REFERENCES tags(id), origin TEXT, locked_by_user INTEGER,
+                    PRIMARY KEY(target_kind,target_key,tag_id));
+                CREATE INDEX assignment_filters ON tag_assignments(tag_id,target_kind,target_key);
+                PRAGMA user_version=3;
+                COMMIT;
+            """)
+        from .tags import target_key
+        def sql_target(kind, entity_id, message_id):
+            target = {"kind": kind, "card_id" if kind == "card" else "conversation_id": entity_id}
+            if kind == "message":
+                target["message_id"] = message_id
+            return target_key(target)
+        connection.create_function("matlas_target", 3, sql_target, deterministic=True)
         return connection
 
     def source_files(self):
@@ -253,7 +274,7 @@ class Library:
         connection = self.connect()
         try:
             with connection:
-                for table in ("card_fts", "cards", "message_fts", "message_versions", "messages", "conversations", "import_batches"):
+                for table in ("tag_assignments", "tags", "card_fts", "cards", "message_fts", "message_versions", "messages", "conversations", "import_batches"):
                     connection.execute("DELETE FROM " + table)
                 for source in self.source_files():
                     record = json.loads(source.read_text(encoding="utf-8"))
@@ -279,6 +300,8 @@ class Library:
                         batch["id"], batch["file_hash"], batch["imported_at"], batch["status"], json.dumps(batch["counts"])))
                 from .cards import index_cards
                 index_cards(self, connection)
+                from .tags import index_catalog
+                index_catalog(self, connection)
         finally:
             connection.close()
         return self.stats()
@@ -287,7 +310,7 @@ class Library:
         connection = self.connect()
         try:
             return {table: connection.execute("SELECT count(*) FROM " + table).fetchone()[0]
-                    for table in ("conversations", "messages", "message_versions", "import_batches", "cards")}
+                    for table in ("conversations", "messages", "message_versions", "import_batches", "cards", "tags", "tag_assignments")}
         finally:
             connection.close()
 
@@ -332,8 +355,17 @@ class Library:
                 clauses.append(expression)
                 parameters.append(value)
         if tag is not None:
-            clauses.append("EXISTS(SELECT 1 FROM json_each(c.metadata,'$.tags') WHERE value=?)")
-            parameters.append(tag)
+            from .tags import Catalog
+            catalog = Catalog(self)
+            try:
+                ids = catalog.filter_ids(tag)
+            except LibraryError:
+                ids = []
+            clauses.append("""(EXISTS(SELECT 1 FROM tag_assignments a WHERE a.target_kind='card'
+                AND a.target_key=matlas_target('card',c.id,NULL)
+                AND a.tag_id IN (SELECT value FROM json_each(?)))
+                OR EXISTS(SELECT 1 FROM json_each(c.metadata,'$.tags') WHERE value=?))""")
+            parameters.extend((json.dumps(ids), tag))
         sql = "SELECT c.id,c.title,c.type,c.status,c.note_path,c.content_hash,c.metadata," + snippet + " AS snippet " + base
         if clauses:
             sql += " WHERE " + " AND ".join(clauses)
@@ -371,7 +403,7 @@ class Library:
         from .conflicts import resolve
         return resolve(self, name, action=action, expected_hash=expected_hash)
 
-    def search(self, query, *, role=None, since=None, until=None, limit=20, offset=0):
+    def search(self, query, *, role=None, since=None, until=None, tag=None, limit=20, offset=0):
         if not query.strip() or len(query) > 1000 or not 1 <= limit <= 100 or offset < 0:
             raise LibraryError("Invalid search query or pagination bounds.")
         clauses = ["message_fts MATCH ?"]
@@ -380,6 +412,15 @@ class Library:
             if value is not None:
                 clauses.append(expression)
                 params.append(value)
+        if tag is not None:
+            self.rebuild()
+            from .tags import Catalog
+            ids = Catalog(self).filter_ids(tag)
+            clauses.append("""EXISTS(SELECT 1 FROM tag_assignments a
+                WHERE a.tag_id IN (SELECT value FROM json_each(?)) AND
+                ((a.target_kind='message' AND a.target_key=matlas_target('message',m.conversation_id,m.id)) OR
+                 (a.target_kind='conversation' AND a.target_key=matlas_target('conversation',m.conversation_id,NULL))))""")
+            params.append(json.dumps(ids))
         sql = """SELECT c.title, c.id AS conversation_id, m.id AS message_id,
             m.role, m.created_at, m.version, c.note_path, c.source_file,
             snippet(message_fts,2,'[',']','…',24) AS snippet
@@ -398,3 +439,51 @@ class Library:
             raise LibraryError("Invalid FTS search expression or unavailable index.") from None
         finally:
             connection.close()
+
+    @exclusive
+    def tags(self, action, **kwargs):
+        from .tags import Catalog, add_rule, assign, classify, review_proposal
+        if action == "classify":
+            return classify(self, **kwargs)
+        if action == "assign":
+            return assign(self, **kwargs)
+        if action == "review-proposal":
+            return review_proposal(self, **kwargs)
+        self.rebuild()
+        catalog = Catalog(self)
+        if action == "register":
+            result = catalog.register(**kwargs)
+        elif action == "review":
+            result = catalog.review(**kwargs)
+        elif action == "alias":
+            result = catalog.alias(**kwargs)
+        elif action == "merge":
+            result = catalog.merge(**kwargs)
+        elif action == "rule-add":
+            result = add_rule(catalog, **kwargs)
+        elif action == "rule-remove":
+            rule_id = kwargs["rule_id"]
+            if rule_id not in catalog.data["rules"]:
+                raise LibraryError("Rule not found.")
+            del catalog.data["rules"][rule_id]
+            for proposal in catalog.data["proposals"].values():
+                if proposal["rule_id"] == rule_id and proposal["status"] == "pending":
+                    proposal["status"] = "outdated"
+            catalog.event("rule-remove", rule_id=rule_id)
+            catalog.save()
+            result = {"removed": rule_id}
+        elif action == "tree":
+            return catalog.tree()
+        elif action in {"list", "rules", "proposals", "assignments", "audit"}:
+            if action == "audit":
+                return catalog.data["audit"][-min(1000, max(1, kwargs.get("limit", 100))):]
+            values = list(catalog.data["tags" if action == "list" else action].values())
+            if kwargs.get("status") is not None:
+                values = [v for v in values if v.get("status") == kwargs["status"]]
+            if kwargs.get("target") is not None:
+                values = [v for v in values if v.get("target") == kwargs["target"]]
+            return values
+        else:
+            raise LibraryError("Unknown tag operation.")
+        self.rebuild()
+        return result

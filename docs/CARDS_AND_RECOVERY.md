@@ -43,7 +43,7 @@ $atlasCurrent = & $atlasPython -m matlasagent --instance $atlasInstance card sho
 
 `--expect-hash` impide reemplazar una versión que ya ha cambiado. Si hay conflicto, la CLI devuelve código 2 y guarda la propuesta aparte. Si cambias el contenido de una ficha revisada por CLI, vuelve a borrador salvo revisión explícita. Cuando edites directamente en Obsidian, actualiza tú las propiedades de revisión y las fechas. Cierra el editor para aplicar reemplazos por CLI.
 
-Una decisión puede señalar a su sucesora con `card update ... --superseded-by <UUID>`; no se admiten ciclos. Las etiquetas actuales son una lista editable, todavía sin catálogo central.
+Una decisión puede señalar a su sucesora con `card update ... --superseded-by <UUID>`; no se admiten ciclos. Las etiquetas siguen siendo una lista editable; el [catálogo central](TAGS.md) interpreta nombres y alias aprobados y protege los cambios humanos.
 
 ## Revisar conflictos
 
