@@ -1,4 +1,4 @@
-# Architecture — deliveries 1–2
+# Architecture — deliveries 1–3
 
 ## Application and independent instances
 
@@ -30,7 +30,19 @@ Foreign keys, composite keys and date index are created explicitly. Newer index 
 
 ## Migration 2
 
-Transactional migration from version 1 adds `cards` (UUID, title, type/status, dates, path, hash, metadata and body), `card_fts` (title/body), and card-filter index; `user_version=2`. Existing source messages are retained. Knowledge-card search supports type, status, freeform tag, UTC creation-date filters and pagination. Tags are editable metadata here; a central catalog and hierarchy are delivery 3.
+Transactional migration from version 1 adds `cards` (UUID, title, type/status, dates, path, hash, metadata and body), `card_fts` (title/body), and card-filter index; `user_version=2`. Existing source messages are retained. Knowledge-card search supports type, status, tags, UTC creation-date filters and pagination.
+
+## Migration 3 and durable tag catalog
+
+Migration 2→3 adds derived `tags` and `tag_assignments` tables plus assignment filters, retaining previous messages/cards. Foreign keys enforce tag IDs and hierarchy references, deferred during full rebuild. `user_version=3` is current. `tags.json`, outside SQLite in the private instance, stores the canonical approved/proposed/rejected vocabulary, stable IDs, hierarchy, aliases, merge redirects, literal rules, reviewed assignments, rejection blocks, pending/outdated proposals, card-tag snapshots and audit. It is durable operational state and is included in backups. An index deletion never deletes approvals or human blocks. Invalid catalogs fail closed with static errors.
+
+Tag names use NFKC and casefold, spaces become hyphens, slashes suggest hierarchy at creation, and accents are preserved. Canonical and alias collisions are rejected. An explicitly created child needs an approved parent. Approved hierarchy is stored by parent UUID. Merging redirects the source ID to the destination, reparents children, preserves old names/aliases and source/card references, and rejects cycles. Child slugs remain stable historical identifiers; the displayed tree follows parent UUIDs, not a rewritten lexical prefix. Merges never rewrite human Markdown. Sensitivity is inherited from parents and propagated on merge; sensitive rule targets require explicit opt-in.
+
+Existing card `tags` remain canonical editable metadata. Known aliases/slugs are interpreted using the approved catalog. Unknown freeform tags are preserved verbatim and never silently approved. Rebuild compares canonical tag lists with previous snapshots: external additions/changes become protected manual assignments; removals become durable human blocks. CLI card tag changes require a current hash and preserve stale proposals. Message/conversation tags are operational state in the catalog; a conversation tag applies to its source messages when filtering. Searches understand aliases and descendants; literal freeform card-tag filtering remains available for compatibility.
+
+Rules use user-configured literal terms with Unicode/case normalization and word boundaries, never executable patterns or AI. Classification only suggests approved tags, does not create vocabulary or edit notes, and prints aggregate counters. Suggestions are idempotent for a target/tag/evidence hash. Approval checks the observed evidence and, for a card, its current hash; it writes an assignment with rule provenance. Rejections and removals block future suggestions until an explicit manual reassignment. Changed/deleted targets or removed rules make proposals outdated. Approved/manual assignments are retained during reimport and reindexing. `import --suggest-tags` opts into the same local proposal generation.
+
+Classification is transparent literal matching, not semantic reasoning or a claim about the author's beliefs. It currently scans targets/rules synchronously and is intended for prototype-sized libraries. The catalog is bounded to 64 MiB, each section to 100,000 records, hierarchy depth to 32 and each rule to 50 literal terms; larger libraries need the later performance/distribution work. Raw source message contents never enter classification logs or the rule audit.
 
 ## Card updates and proposal resolution
 
@@ -60,4 +72,4 @@ Before replacing an unedited generated transcript, its preceding bytes are saved
 
 64 MiB input/JSON, 512 MiB total declared ZIP contents, 10,000 ZIP entries/conversations, 100,000 nodes per conversation, ZIP ratio <=200. ZIP entries are never extracted; absolute paths, traversal, encrypted entries and symlinks are rejected. Exactly one `conversations.json` is required. Limits can reject large legitimate exports; streaming import is future work. Unsupported/non-text parts warn and remain in original bytes. Malformed conversations are counted and skipped, while invalid outer JSON/ZIP aborts parsing.
 
-The index rebuilds fully after each import and before card queries; suited to validating the prototype, not yet optimized for large libraries. Source records accumulate versions; space quotas and archival policies are pending. Do not synchronize a live SQLite file. This prototype has no central tag catalog, Obsidian plugin, MCP, semantic search, graph, automatic account sync, installer or chosen distribution license. All are tracked in the roadmap. The owner's ten real evaluation questions remain pending; synthetic verification does not establish usefulness for every real export format.
+The index rebuilds fully after each import and before card/tag queries; suited to validating the prototype, not yet optimized for large libraries. Source records accumulate versions; space quotas and archival policies are pending. Do not synchronize a live SQLite file. This prototype has no Obsidian plugin, MCP, semantic search, graph, automatic account sync, installer or chosen distribution license. All are tracked in the roadmap. The owner's ten real evaluation questions remain pending; synthetic verification does not establish usefulness for every real export format.

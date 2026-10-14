@@ -1,21 +1,30 @@
 # Estado — 2026-10-14
 
-Repositorio nuevo e independiente. MAtlasAgent es el nombre acordado; MenteAtlas se mantiene en la URL. No se migran experimentos del repositorio anterior.
+Producto: MAtlasAgent. Repositorio dedicado: Jfenic/MenteAtlas. Programa compartido e instancias privadas fuera de Git; ejemplos y pruebas ficticios.
 
-Entrega 1 implementada en `feat/local-library-core`: paquete Python 3.12+, CLI, instancias/vaults separados de Git, importador JSON/ZIP, originales y versiones, transcripciones protegidas, FTS5 con citas y reconstrucción. Instalación editable verificada en Windows. Suite local: 17 pruebas, 16 pasan y una de symlinks omitida por permisos del sistema.
+## Implementado en main
 
-PR en borrador sin fusionar: https://github.com/Jfenic/MenteAtlas/pull/1. Commit de código comprobado: `7c492c3edb1b1192597d42b473a1073414ac225f`. CI Windows/Ubuntu completado con éxito: https://github.com/Jfenic/MenteAtlas/actions/runs/38562604161. Este resultado corresponde a ese commit; consultar GitHub para cambios posteriores.
+El usuario autorizó explícitamente fusionar las entregas existentes y continuar. Se comprobaron los SHA y los últimos checks Windows/Ubuntu antes de fusionar en orden:
 
-Demostración instalada localmente con el ejemplo sintético: una conversación, dos mensajes, segunda importación sin duplicados, búsqueda con fuente y reconstrucción verificadas. Las ubicaciones personales de esa demo no se registran en Git.
+- PR #1 fusionado: https://github.com/Jfenic/MenteAtlas/pull/1. Merge `1e2b8ee97e51f951f0eefbe7634bde464247409b`.
+- PR #2 retargeteado a main y fusionado: https://github.com/Jfenic/MenteAtlas/pull/2. Merge `9adec56b92fc16b3dc4d8a8346c41e5d4e194c47`.
+- Main contiene motor Python/CLI, importación JSON/ZIP, originales/versiones, Obsidian Markdown, FTS5 con citas, fichas editables, conflictos y backup/restauración completa.
+- CI de código de entrega 2 comprobado: https://github.com/Jfenic/MenteAtlas/actions/runs/38567780155 (Windows/Ubuntu satisfactorio).
 
-## Entrega 2 — en rama propia
+No se cambió el repositorio de experimentos ni se fusionaron propuestas nuevas automáticamente.
 
-Implementada en `feat/cards-and-recovery`, apoyada en entrega 1 sin fusionarla. Fichas Markdown/YAML editables con UUID, tipos/estados, fuentes múltiples y versiones exactas; búsquedas con filtros y detección de cambios/movimientos/borrados. Actualizaciones con hash esperado y propuestas preservadas; revisión humana explícita y sucesión de decisiones sin ciclos. Resolución de conflictos, historial y auditoría. Backup completo con manifest/checksums y restauración verificada en otra ubicación, sin sobrescribir destinos y reconstruyendo rutas/índice. PyYAML 6.0.3 fijado para propiedades Obsidian; migración SQLite 1→2.
+## Entrega 3 — desarrollo
 
-Suite local Windows: 44 pruebas, 43 correctas y una omitida por permisos de symlinks. Demostración instalada: ficha con dos fuentes, copia completa y restauración en otra ubicación verificadas, preservando UUID y referencias y usando rutas nuevas.
+Rama `feat/tag-catalog`, basada en main ya fusionado. Catálogo central privado `tags.json`: jerarquía, IDs, alias, propuestas/revisión, fusiones, reglas literales, asignaciones y auditoría. Las reglas proponen etiquetas aprobadas y no crean vocabulario ni reescriben fichas. Los cambios y retiradas humanos en Markdown se protegen, y los rechazos persisten tras reimportación/reindexado. Filtros por alias y descendientes para mensajes y fichas; etiquetas de conversación heredadas al filtrar sus mensajes. Catálogo incluido en backup y restore. Migración SQLite 2→3; paquete 0.3.0.
 
-PR #2 en borrador, sin merge: https://github.com/Jfenic/MenteAtlas/pull/2. Base: `feat/local-library-core` (depende de PR #1); rama `feat/cards-and-recovery`. Commit de implementación `57b435f3ae59d94dd5e942cf3f699ff9837f8d1d` verificado en Windows/Ubuntu: https://github.com/Jfenic/MenteAtlas/actions/runs/38567434636. Ajuste posterior: seguimiento de transcripciones renombradas con extensión `.MD`, con regresión local correcta; comprobar GitHub para el CI del head actual.
+Instalación editable 0.3.0 comprobada. Suite completa local Windows: 67 pruebas, 66 correctas y una omitida por permisos de symlinks. Incluye Unicode, alias/fusiones, cambios y retiradas humanos, propuesta obsoleta, sensibilidad, filtros de fuente/fichas y backup/restauración del catálogo. La guía es `docs/TAGS.md`; límites en `docs/ARCHITECTURE.md`.
 
-No equivale a publicación ni a aprobación humana. Ver `docs/CARDS_AND_RECOVERY.md` para uso y limitaciones de reemplazo concurrente, backup sin cifrado y publicación de restauración en dos carpetas.
+PR #3 en borrador hacia main, sin fusionar: https://github.com/Jfenic/MenteAtlas/pull/3. Commit de implementación `6df659a2597b1b8931d30c98c98535b1d848f43a` verificado con CI Windows/Ubuntu satisfactorio: https://github.com/Jfenic/MenteAtlas/actions/runs/38577388647. Consultar GitHub para cambios posteriores. La autorización de merge de PRs #1/#2 no se interpreta como aprobación automática de nuevas entregas.
 
-Pendiente: catálogo central de etiquetas, plugin Obsidian, MCP, IA, grafos y distribución/licencia. La búsqueda de mensajes corresponde a fuentes; las anotaciones de transcripciones no se indexan, pero el contenido de fichas sí. Datos utilizados: exclusivamente sintéticos. Las diez preguntas reales siguen pendientes para validar utilidad cotidiana.
+Ajuste posterior: salida JSON de la CLI forzada a UTF-8 en Windows; se observó cp1252 en el entorno y se añadió prueba de ida/vuelta con etiqueta japonesa en un stream cp1252. Regresión local correcta y suite de 68 pruebas en CI Windows/Ubuntu satisfactoria para `1493b577ab4f6cc2559f68c56ac0632dc8f4f250`: https://github.com/Jfenic/MenteAtlas/actions/runs/38578976208. Los commits posteriores de documentación no cambian el código comprobado.
+
+Demostración instalada con datos ficticios: una sugerencia aprobada para una ficha y una asignación manual de mensaje; backup/restauración conservaron dos etiquetas y dos asignaciones, búsqueda por alias y por categoría padre, sin propuestas pendientes. Sus datos/rutas locales están fuera de Git.
+
+## Pendiente
+
+Plugin Obsidian y API local, MCP de lectura, IA/semántica opcional, relaciones/grafos, distribución Windows y licencia. Las diez preguntas reales siguen pendientes para evaluar utilidad cotidiana. La búsqueda de mensajes corresponde a las fuentes; las anotaciones de transcripciones no se indexan, pero el contenido de fichas sí.

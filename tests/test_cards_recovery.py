@@ -218,10 +218,10 @@ class LibraryTests(unittest.TestCase):
 
     def test_migration_from_delivery_one_preserves_messages(self):
         connection = self.library.connect()
-        connection.executescript("DROP TABLE card_fts; DROP TABLE cards; PRAGMA user_version=1;")
+        connection.executescript("DROP TABLE tag_assignments; DROP TABLE tags; DROP TABLE card_fts; DROP TABLE cards; PRAGMA user_version=1;")
         connection.close()
         connection = self.library.connect()
-        self.assertEqual(connection.execute("PRAGMA user_version").fetchone()[0], 2)
+        self.assertEqual(connection.execute("PRAGMA user_version").fetchone()[0], 3)
         self.assertEqual(connection.execute("SELECT count(*) FROM messages").fetchone()[0], 2)
         connection.close()
 

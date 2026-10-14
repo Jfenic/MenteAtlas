@@ -1,14 +1,14 @@
 # MAtlasAgent — inicio en Windows
 
-Este es el prototipo de consola de las entregas 1–2. Python 3.12 y Git deben estar instalados; Obsidian sirve para abrir la carpeta de notas. No requiere WSL. Empieza con la demostración sintética y comprueba backup/restauración en otra carpeta antes de importar tus exportaciones reales.
+Este es el prototipo de consola. Las entregas 1–2 ya están integradas en `main`; el catálogo de etiquetas es la entrega 3. Python 3.12 y Git deben estar instalados; Obsidian sirve para abrir la carpeta de notas. No requiere WSL. Empieza con la demostración sintética y comprueba backup/restauración en otra carpeta antes de importar tus exportaciones reales.
 
 ## Instalar el programa
 
 ```powershell
 git clone https://github.com/Jfenic/MenteAtlas.git
 cd MenteAtlas
-# Mientras la primera entrega esté en revisión:
-git switch feat/cards-and-recovery
+# Para probar la entrega 3 mientras esté en revisión:
+git switch feat/tag-catalog
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e .
 .\.venv\Scripts\python.exe -m matlasagent --help
