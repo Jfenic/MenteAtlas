@@ -6,13 +6,14 @@ Nombre de producto: **MAtlasAgent**. Repositorio: **Jfenic/MenteAtlas**.
 
 Application code is shared; every person keeps their own library and settings outside Git. Personal conversation exports never belong in this repository. The application does not connect to your ChatGPT account or send data to AI providers.
 
-**Status: first CLI prototype, not the complete product.** Import ChatGPT JSON/ZIP exports, preserve source versions, render Obsidian transcripts, search using SQLite FTS5 and rebuild the index. Human transcript edits are preserved and conflicting generated proposals are stored separately. Knowledge cards, tags, backup/restore, Obsidian plugin, MCP and AI are planned deliveries, not implemented features.
+**Status: CLI prototype, deliveries 1–2, not the complete product.** Import ChatGPT JSON/ZIP exports, preserve source versions, render Obsidian transcripts, create editable knowledge cards, search messages/cards with citations, resolve preserved proposals, and back up/restore independent libraries. Moves and deletions of cards are respected. Central tag management, Obsidian plugin, MCP, AI and graphs are planned deliveries.
 
 - [Inicio en Windows / Windows quick start](docs/WINDOWS.md)
 - [Architecture, data model and limitations](docs/ARCHITECTURE.md)
+- [Fichas, conflictos y recuperación / Cards and recovery](docs/CARDS_AND_RECOVERY.md)
 - [Plan completo / Roadmap](docs/ROADMAP.md)
 
-Python 3.12+ is required. Runtime dependencies: standard library only. Installation downloads the setuptools build backend. See `python -m matlasagent --help` after installing with `python -m pip install -e .`.
+Python 3.12+ is required. Runtime dependency: **PyYAML 6.0.3**, pinned for safe, editable YAML front matter compatible with Obsidian property edits; remaining runtime code uses the standard library. Installation downloads this dependency and the setuptools build backend. See `python -m matlasagent --help` after installing with `python -m pip install -e .`.
 
 Every library uses `--instance` to select its configuration and private source archive, plus a separate Obsidian vault. The same installation can serve several libraries. Application updates do not replace instance directories.
 

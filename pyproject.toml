@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "matlasagent"
-version = "0.1.0"
+version = "0.2.0"
 description = "A local personal knowledge atlas with independent libraries"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = ["PyYAML==6.0.3"]
 
 [project.scripts]
 matlas = "matlasagent.cli:main"
