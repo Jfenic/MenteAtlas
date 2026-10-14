@@ -95,12 +95,12 @@ class ApiTests(unittest.TestCase):
             self.assertNotIn(marker, json.dumps(output))
         self.assertEqual(self.library.stats()["cards"], 0)
         self.assertEqual(self.request("POST", "/cards", raw=b"not-json", headers={"Content-Type": "application/json"})[0], 400)
-        self.assertEqual(self.request("POST", "/cards", {}, headers={"Transfer-Encoding": "chunked"})[0], 400)
+        self.assertEqual(self.request("POST", "/cards", raw=b"", headers={"Transfer-Encoding": "chunked"})[0], 400)
         self.assertEqual(self.request("GET", "/missing")[0], 404)
 
     def test_upload_limits_invalid_format_and_cleanup(self):
         headers = {"Content-Type": "application/octet-stream", "X-MAtlas-Format": "json"}
-        self.assertEqual(self.request("POST", "/import", raw=b"x", headers={**headers, "Content-Length": str(65 * 1024 * 1024)})[0], 400)
+        self.assertEqual(self.request("POST", "/import", raw=b"", headers={**headers, "Content-Length": str(65 * 1024 * 1024)})[0], 400)
         self.assertEqual(self.request("POST", "/import", raw=b"x", headers={**headers, "X-MAtlas-Format": "../json"})[0], 400)
         self.assertEqual(self.request("POST", "/import", raw=b"invalid", headers=headers)[0], 400)
         self.assertFalse(list(self.library.root.glob(".pending-api-import-*")))

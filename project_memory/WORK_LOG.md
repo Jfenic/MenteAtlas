@@ -1,5 +1,7 @@
 # Registro
 
+- 2026-10-14: PR #5 creado en borrador sobre PR #4: https://github.com/Jfenic/MenteAtlas/pull/5. Paquete Python 0.4.0 instalado; plugin compilado copiado a la demo y bundle ZIP preparado localmente, sin configuración privada. CI pendiente. Sin merge.
+
 - 2026-10-14: tras aclaración de que el usuario quiere trabajar dentro de Obsidian, implementado plugin TypeScript + API local autenticada en `feat/obsidian-plugin` (0.4.0), sobre PR #4. Suite Python de 78 pruebas correcta (una omisión por symlinks), seis pruebas API y tres pruebas Node del cliente real correctas; compilación TypeScript correcta. Demo nueva con plugin preparada fuera de Git. Obsidian instalado, CLI desactivada; la carga visual queda pendiente y no se declara verificada. CI/PR pendientes.
 
 - 2026-10-14: CI de vista previa satisfactorio en Windows/Ubuntu para `4146764`: https://github.com/Jfenic/MenteAtlas/actions/runs/38595678936. PR #4 sigue en borrador, sin fusionar. Commits posteriores registran resultados y no cambian la implementación probada.

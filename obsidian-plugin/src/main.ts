@@ -218,4 +218,3 @@ class AtlasView extends ItemView {
     await this.refresh(); await this.plugin.openNote(result.vault_path);
   }
 }
-
