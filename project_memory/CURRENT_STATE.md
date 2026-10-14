@@ -17,7 +17,9 @@ No se cambió el repositorio de experimentos ni se fusionaron propuestas nuevas 
 
 Rama `feat/tag-catalog`, basada en main ya fusionado. Catálogo central privado `tags.json`: jerarquía, IDs, alias, propuestas/revisión, fusiones, reglas literales, asignaciones y auditoría. Las reglas proponen etiquetas aprobadas y no crean vocabulario ni reescriben fichas. Los cambios y retiradas humanos en Markdown se protegen, y los rechazos persisten tras reimportación/reindexado. Filtros por alias y descendientes para mensajes y fichas; etiquetas de conversación heredadas al filtrar sus mensajes. Catálogo incluido en backup y restore. Migración SQLite 2→3; paquete 0.3.0.
 
-Instalación editable 0.3.0 comprobada. Suite completa local Windows: 67 pruebas, 66 correctas y una omitida por permisos de symlinks. Incluye Unicode, alias/fusiones, cambios y retiradas humanos, propuesta obsoleta, sensibilidad, filtros de fuente/fichas y backup/restauración del catálogo. CI y PR de entrega 3 pendientes de registrar. La guía es `docs/TAGS.md`; límites en `docs/ARCHITECTURE.md`.
+Instalación editable 0.3.0 comprobada. Suite completa local Windows: 67 pruebas, 66 correctas y una omitida por permisos de symlinks. Incluye Unicode, alias/fusiones, cambios y retiradas humanos, propuesta obsoleta, sensibilidad, filtros de fuente/fichas y backup/restauración del catálogo. La guía es `docs/TAGS.md`; límites en `docs/ARCHITECTURE.md`.
+
+PR #3 en borrador hacia main, sin fusionar: https://github.com/Jfenic/MenteAtlas/pull/3. Commit de implementación `6df659a2597b1b8931d30c98c98535b1d848f43a` verificado con CI Windows/Ubuntu satisfactorio: https://github.com/Jfenic/MenteAtlas/actions/runs/38577388647. Consultar GitHub para cambios posteriores. La autorización de merge de PRs #1/#2 no se interpreta como aprobación automática de nuevas entregas.
 
 Demostración instalada con datos ficticios: una sugerencia aprobada para una ficha y una asignación manual de mensaje; backup/restauración conservaron dos etiquetas y dos asignaciones, búsqueda por alias y por categoría padre, sin propuestas pendientes. Sus datos/rutas locales están fuera de Git.
 
