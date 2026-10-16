@@ -1,5 +1,7 @@
 # Registro
 
+- 2026-10-16: usuario confirmó el recorrido de ficha tras mostrar captura real del panel Obsidian conectado. Preparada biblioteca personal independiente, vacía y configurada, con plugin instalado fuera de Git. Copia inicial y restauración temporal comprobadas; sin exportaciones personales leídas/importadas. Guía para abrir la carpeta como bóveda y seleccionar exportación local.
+
 - 2026-10-14: CI final del código Obsidian correcto en Windows y Ubuntu, incluyendo Python, compilación y cliente real: `a674cd7`, https://github.com/Jfenic/MenteAtlas/actions/runs/38646827262. Corregidos aliases 8.3 con resolución nativa. PR #5 sigue en borrador, sin merge. La verificación visual en la aplicación sigue pendiente.
 
 - 2026-10-14: comprobación local específica con `C:\PROGRA~1` confirmó que la variante JS de `realpathSync` conserva el alias; cambiada a `realpathSync.native`, que devuelve `C:\Program Files`. La prueba cliente completa de CI usa precisamente rutas temporales con alias en Windows.
