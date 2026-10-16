@@ -1,0 +1,11 @@
+.matlas-panel { padding: 20px; overflow-y: auto; }
+.matlas-panel h1 { margin-top: 0; }
+.matlas-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0; }
+.matlas-panel input[type=text] { min-width: 180px; max-width: 100%; }
+.matlas-panel > input[type=text], .matlas-panel textarea { display: block; width: 100%; margin: 10px 0; }
+.matlas-status { padding: 10px; background: var(--background-secondary); border-radius: 6px; }
+.matlas-stats { color: var(--text-muted); margin: 10px 0; }
+.matlas-result { border: 1px solid var(--background-modifier-border); border-radius: 6px; padding: 12px; margin: 10px 0; }
+.matlas-result p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.matlas-panel small { color: var(--text-muted); }
+.matlas-panel[aria-busy=true] .matlas-status { border-left: 3px solid var(--interactive-accent); }

@@ -1,5 +1,17 @@
 # Registro
 
+- 2026-10-16: usuario confirmó el recorrido de ficha tras mostrar captura real del panel Obsidian conectado. Preparada biblioteca personal independiente, vacía y configurada, con plugin instalado fuera de Git. Copia inicial y restauración temporal comprobadas; sin exportaciones personales leídas/importadas. Guía para abrir la carpeta como bóveda y seleccionar exportación local.
+
+- 2026-10-14: CI final del código Obsidian correcto en Windows y Ubuntu, incluyendo Python, compilación y cliente real: `a674cd7`, https://github.com/Jfenic/MenteAtlas/actions/runs/38646827262. Corregidos aliases 8.3 con resolución nativa. PR #5 sigue en borrador, sin merge. La verificación visual en la aplicación sigue pendiente.
+
+- 2026-10-14: comprobación local específica con `C:\PROGRA~1` confirmó que la variante JS de `realpathSync` conserva el alias; cambiada a `realpathSync.native`, que devuelve `C:\Program Files`. La prueba cliente completa de CI usa precisamente rutas temporales con alias en Windows.
+
+- 2026-10-14: CI Ubuntu correcto; Windows detectó comparación textual de ruta temporal con alias 8.3 `RUNNER~1`. Ajustado el assert Python a ruta resuelta y la comprobación del vault en el cliente a `realpathSync`, manteniendo rechazo de otra biblioteca. Revalidación pendiente.
+
+- 2026-10-14: PR #5 creado en borrador sobre PR #4: https://github.com/Jfenic/MenteAtlas/pull/5. Paquete Python 0.4.0 instalado; plugin compilado copiado a la demo y bundle ZIP preparado localmente, sin configuración privada. CI pendiente. Sin merge.
+
+- 2026-10-14: tras aclaración de que el usuario quiere trabajar dentro de Obsidian, implementado plugin TypeScript + API local autenticada en `feat/obsidian-plugin` (0.4.0), sobre PR #4. Suite Python de 78 pruebas correcta (una omisión por symlinks), seis pruebas API y tres pruebas Node del cliente real correctas; compilación TypeScript correcta. Demo nueva con plugin preparada fuera de Git. Obsidian instalado, CLI desactivada; la carga visual queda pendiente y no se declara verificada. CI/PR pendientes.
+
 - 2026-10-14: CI de vista previa satisfactorio en Windows/Ubuntu para `4146764`: https://github.com/Jfenic/MenteAtlas/actions/runs/38595678936. PR #4 sigue en borrador, sin fusionar. Commits posteriores registran resultados y no cambian la implementación probada.
 
 - 2026-10-14: PR #4 creado en borrador sobre PR #3: https://github.com/Jfenic/MenteAtlas/pull/4. Wheel 0.3.1 comprobado con recurso de demo y entrada de escritorio. Sin merge automático; CI pendiente.

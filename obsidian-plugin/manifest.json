@@ -1,0 +1,10 @@
+{
+  "id": "matlasagent",
+  "name": "MAtlasAgent",
+  "version": "0.4.0",
+  "minAppVersion": "1.8.0",
+  "description": "Import local conversations, search your knowledge library and create cards with source references.",
+  "author": "Jfenic",
+  "authorUrl": "https://github.com/Jfenic",
+  "isDesktopOnly": true
+}

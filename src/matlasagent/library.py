@@ -71,11 +71,20 @@ class Library:
         self.db = confined(self.root, "index.sqlite3")
 
     @classmethod
-    def initialize(cls, instance, vault):
+    def initialize(cls, instance, vault, *, allow_obsidian_config=False):
         root, vault = private_path(Path(instance)), private_path(Path(vault))
         if root == vault or root.is_relative_to(vault) or vault.is_relative_to(root):
             raise LibraryError("Vault and instance directories must be separate.")
-        if (root.exists() and any(root.iterdir())) or (vault.exists() and any(vault.iterdir())):
+        contents = list(vault.iterdir()) if vault.exists() else []
+        if allow_obsidian_config:
+            # A newly created Obsidian vault already contains its application config.
+            # Never adopt notes or an existing managed library implicitly.
+            has_config = any(p.name == ".obsidian" for p in contents)
+            contents = [p for p in contents if p.name != ".obsidian"]
+            if has_config:
+                if not confined(vault, ".obsidian").is_dir():
+                    raise LibraryError("Obsidian configuration must be a directory.")
+        if (root.exists() and any(root.iterdir())) or contents:
             raise LibraryError("Init requires empty instance and vault directories.")
         root.mkdir(parents=True, exist_ok=True)
         vault.mkdir(parents=True, exist_ok=True)

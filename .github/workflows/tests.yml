@@ -24,3 +24,17 @@ jobs:
       - run: python -m unittest discover -s tests -v
       - run: python -m matlasagent --help
       - run: python -m matlasagent.desktop --help
+      - run: python -m matlasagent.api --help
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: obsidian-plugin/package-lock.json
+      - run: npm ci
+        working-directory: obsidian-plugin
+      - run: npm run build
+        working-directory: obsidian-plugin
+      - run: npm test
+        working-directory: obsidian-plugin
+        env:
+          MATLAS_TEST_PYTHON: python
